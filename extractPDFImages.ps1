@@ -9,4 +9,6 @@ param (
 . "$PSScriptRoot\Get-QPDF.ps1"
 $qpdfHome = Get-QPDF
 
-& "$qpdfHome\bin\qpdf.exe" $Path --decrypt "$path.unlocked.pdf"
+$pdfImages = Get-Item "pdfimages.exe"
+
+& $pdfImages -j $InputObject $Output
