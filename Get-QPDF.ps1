@@ -1,14 +1,16 @@
 function Get-QPDF {
-    Remove-Item "$PSScriptRoot\qpdf.zip" -ErrorAction Ignore
-    $qpdfHome = Get-Item "$PSScriptRoot\qpdf*"
+    $ErrorActionPreference = "Stop"
+    $qpdfHome = Get-Item "$PSScriptRoot\qpdf*" -ErrorAction Ignore
 
-    if (!$qpdfHome) {
-        $Release = Invoke-WebRequest -UseBasicParsing "https://github.com/qpdf/qpdf/releases/latest"
-        $Release = $Release.Links.href | Where-Object { $_ -like "*mingw64*" }
-        Invoke-WebRequest -UseBasicParsing "https://github.com/$Release"  -OutFile "qpdf.zip" -ErrorAction Stop
-        Expand-Archive "qpdf.zip" -DestinationPath $PSScriptRoot -ErrorAction Stop
-        Remove-Item "qpdf.zip"
+    if ($qpdfHome) {
+        return [IO.Path]::Combine((Get-Item "$PSScriptRoot\qpdf*"), "bin")
     }
+    $rest = Invoke-RestMethod -Uri "https://api.github.com/repos/qpdf/qpdf/releases/latest"
+    $asset = $rest.assets | Where-Object { $_.name -like "*mingw64*.zip" }
+
+    Invoke-WebRequest -UseBasicParsing -OutFile "qpdf.zip" $asset.browser_download_url.tostring()
+    Expand-Archive "qpdf.zip" -DestinationPath $PSScriptRoot
+    Remove-Item "qpdf.zip"
 
     return Get-Item "$PSScriptRoot\qpdf*"
 }

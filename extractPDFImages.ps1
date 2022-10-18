@@ -3,12 +3,14 @@
 param (
     [Parameter(ValueFromPipeline, Mandatory)]
     $InputObject,
-    $Output = $pwd
+    $Output = "$pwd\output"
 )
 
-. "$PSScriptRoot\Get-QPDF.ps1"
-$qpdfHome = Get-QPDF
+. "$PSScriptRoot\Get-PDFImages.ps1"
+$pdfImagesHome = Get-PDFImages
 
-$pdfImages = Get-Item "pdfimages.exe"
+$pdfImages = Get-Item "$pdfImagesHome\bin64\pdfimages.exe"
 
-& $pdfImages -j $InputObject $Output
+New-Item -ItemType Directory $Output -Force
+
+& $pdfImages -j $InputObject "$Output\out"
