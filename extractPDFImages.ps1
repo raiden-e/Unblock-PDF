@@ -3,21 +3,29 @@
 param (
     [Parameter(ValueFromPipeline, Mandatory)]
     $InputObject,
-    $Output = "$pd\output",
+    $Output = "$pwd\output",
     [Parameter()]
     [Alias("j")]
     [switch]$jpeg
 )
 
+$ErrorActionPreference = "Stop"
+
 . "$PSScriptRoot\Get-PDFImages.ps1"
 $pdfImagesHome = Get-PDFImages
+if (!$pdfImagesHome) {
+    throw "Could not get pdfImages bins"
+}
+Write-Host "Got pdf images binaries"
 
 $pdfImages = Get-Item "$pdfImagesHome\bin64\pdfimages.exe"
 New-Item -ItemType Directory $Output -Force
 
+$argumentList = $InputObject, "$OutPut"
 if ($jpeg) {
-    & $pdfImages -j $InputObject $Output
-    return
+    $argumentList = "-j", $InputObject, "$OutPut\"
 }
-& $pdfImages $InputObject $Output
+Write-Host "$pdfImages $($argumentList -join " ")"
+Start-Process $pdfImages -ArgumentList $argumentList -NoNewWindow
+
 # Convert to webp on photopea
