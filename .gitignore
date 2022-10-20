@@ -2,3 +2,5 @@ qpdf*
 *.pdf
 *.exe
 images*
+output*
+xpdf*
