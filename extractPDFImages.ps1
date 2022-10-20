@@ -3,7 +3,10 @@
 param (
     [Parameter(ValueFromPipeline, Mandatory)]
     $InputObject,
-    $Output = $pwd
+    $Output = $pwd,
+    [Parameter()]
+    [Alias("j")]
+    [switch]$jpeg
 )
 
 . "$PSScriptRoot\Get-QPDF.ps1"
@@ -11,4 +14,9 @@ $qpdfHome = Get-QPDF
 
 $pdfImages = Get-Item "pdfimages.exe"
 
-& $pdfImages -j $InputObject $Output
+if ($jpeg) {
+    & $pdfImages -j $InputObject $Output
+    return
+}
+& $pdfImages $InputObject $Output
+# Convert to webp on photopea
