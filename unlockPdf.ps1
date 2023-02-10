@@ -5,7 +5,7 @@ param (
     $Path
 )
 
-. .$PSScriptRoot\Get-QPDF.ps1
+. "$PSScriptRoot\Get-QPDF.ps1"
 $qpdfHome = Get-QPDF
 
-& "$qpdfHome\bin\qpdf.exe" $Path --decrypt "$path.unlocked.pdf"
+& "$qpdfHome\qpdf.exe" $Path --decrypt "$path.unlocked.pdf"
