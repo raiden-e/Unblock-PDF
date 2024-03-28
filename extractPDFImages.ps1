@@ -23,7 +23,7 @@ New-Item -ItemType Directory $Output -Force
 
 $argumentList = $InputObject, "$OutPut"
 if ($jpeg) {
-    $argumentList = "-j", $InputObject, "$OutPut\"
+    $argumentList = "-j", """$InputObject""", "$OutPut\"
 }
 Write-Host "$pdfImages $($argumentList -join " ")"
 Start-Process $pdfImages -ArgumentList $argumentList -NoNewWindow
